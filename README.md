@@ -14,3 +14,5 @@ python3 ionex_samples.py
 
 ## Training the network
 python3 tec_lstm.py
+
+The parameters.py file is created during training. If you retrain the network, please remove it.
