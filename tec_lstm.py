@@ -74,9 +74,12 @@ print(f"Loading model {fileName}")
 model = tf.keras.models.load_model(fileName)
 
 ynew = model.predict(testX)
-prediction_error=ynew.reshape(-1)-testY.reshape(-1)
-print()
-print(f"Erro médio de previsão ", np.linalg.norm(prediction_error)/np.sqrt(len(prediction_error)))
-plt.plot(ynew,y)
+
+from sklearn.metrics import r2_score,mean_squared_error
+flatY=testY.reshape(-1)
+flatYnew= ynew.reshape(-1)
+
+print("R2 ",r2_score(flatY,flatYnew))
+print("RMSE ",mean_squared_error(flatY,flatYnew))
 
 print("ok")
