@@ -52,7 +52,9 @@ training_generator = DataGenerator(trainX, trainY, batch_size=batch_size)
 validation_generator = DataGenerator(valX, valY, batch_size=batch_size)
 
 #from models.models
-model= ConvLSTM_121_Boulch_8units(datax[0].shape)
+#model= ConvLSTM_121_Boulch_8units(datax[0].shape)
+model= ConvLSTM_121_Boulch_16units(datax[0].shape)
+#ConvLSTM_121_Boulch_16units
 
 print(model.summary())
 plot_model(model, to_file=getModelFileName(model.name).replace('h5','.png'), show_shapes=True, show_layer_names=True)

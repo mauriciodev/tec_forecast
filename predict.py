@@ -46,11 +46,9 @@ else:
     plt.scatter(flatY,flatYnew,s=2 )
     plt.annotate("r-squared = {:.3f}".format(r2_score(flatY,flatYnew)), (0, 1))
     plt.savefig(fileName.split(".")[0]+"_r2plot.png", bbox_inches='tight')
-    r2_score(flatY,flatYnew)
+    print(model.summary())
+    print("R2 ",r2_score(flatY,flatYnew))
     print("RMSE ",sklearn.metrics.mean_squared_error(flatY,flatYnew))
-    print(datax[-1,-1,0,0])
-    print(datay[-1,0,0])
-    print(ynew[-1,0,0])
     #plotMap(ynew[-1])
 
     #TODO:This is UNFINISHED WE 

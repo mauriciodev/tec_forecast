@@ -8,6 +8,7 @@ https://github.com/aboulch/tec_prediction/
 
 ## download 3 years of data (2018-2020)
 python3 downloader.py 
+Or download from: https://drive.google.com/file/d/1WJmLn_PruCiMqTQ0oPTtE2k_pZUgIEkj/view?usp=sharing
 
 ## create numpy representation for the data downloaded
 python3 ionex_samples.py 
