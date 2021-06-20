@@ -1,3 +1,5 @@
+#https://machinelearningmastery.com/how-to-develop-lstm-models-for-multi-step-time-series-forecasting-of-household-power-consumption/
+#https://blog.keras.io/a-ten-minute-introduction-to-sequence-to-sequence-learning-in-keras.html
 
 from keras.layers import LSTM, ConvLSTM2D, Dense,BatchNormalization, Input
 from keras.callbacks import EarlyStopping
@@ -8,7 +10,6 @@ import numpy as np
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 import tensorflow as tf
 from tensorflow.keras.callbacks import EarlyStopping
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from keras.utils.vis_utils import plot_model
 from models.models import *
 
@@ -31,10 +32,10 @@ with open(f'parameters.py','w') as f:f.write(repr(parameters))
 #scaling
 ionex=scaleForward(ionex,parameters)
 
+input_t_steps=36
+output_t_steps=24
 
-
-
-x,y=split_sequence(ionex,4)
+x,y=split_sequence(ionex,input_t_steps)
 datax=np.expand_dims(x,-1) #adding channel dimension
 datay=np.expand_dims(y,-1) #adding channel dimension
 #datax=datax[-200:] #reducing dataset because it's taking too long to test
@@ -52,8 +53,8 @@ training_generator = DataGenerator(trainX, trainY, batch_size=batch_size)
 validation_generator = DataGenerator(valX, valY, batch_size=batch_size)
 
 #from models.models
-#model= ConvLSTM_121_Boulch_8units(datax[0].shape)
-model= ConvLSTM_121_Boulch_16units(datax[0].shape)
+model= ConvLSTM_121_Boulch_8units(datax[0].shape)
+#model= ConvLSTM_121_Boulch_16units(datax[0].shape)
 #ConvLSTM_121_Boulch_16units
 
 print(model.summary())
