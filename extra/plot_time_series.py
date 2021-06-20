@@ -3,13 +3,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import imageio
 
-filenames=[]
 
-def saveGif(matrixList,gifFileName):
+
+def saveGif(matrixList,gifFileName,clearFrames=True):
+    filenames=[]
     for i,m in enumerate(matrixList):
         # plot the line chart
         #plt.plot(y[:i])
-        plt.imshow(m, extent=[-180,180,-90,90]) #minx maxx miny maxy
+        plt.imshow(np.squeeze(m), extent=[-180,180,-90,90]) #minx maxx miny maxy
         
         # create file name and append it to a list
         filename = f'{gifFileName}_{i}.png'
@@ -23,16 +24,19 @@ def saveGif(matrixList,gifFileName):
             image = imageio.imread(filename)
             writer.append_data(image)
     # Remove files
-    for filename in set(filenames):
-        os.remove(filename)
+    if clearFrames:
+        for filename in set(filenames):
+            os.remove(filename)
 
-matrixList=None
-for d in range(1,2):
-    f=f"ionex/codg00{d}0.20i.npy"
-    ionex=np.load(f)
-    if matrixList is None:
-        matrixList=ionex[:24]
-    else:
-        matrixList=np.concatenate((matrixList,ionex[:24]))
-saveGif(matrixList,'mygif.gif')
-        
+if __name__=="__main__":
+    matrixList=None
+    
+    for d in range(1,2):
+        f=f"ionex/codg00{d}0.20i.npy"
+        ionex=np.load(f)
+        if matrixList is None:
+            matrixList=ionex[:24]
+        else:
+            matrixList=np.concatenate((matrixList,ionex[:24]))
+    saveGif(matrixList,'mygif.gif')
+            

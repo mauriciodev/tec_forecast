@@ -33,27 +33,35 @@ with open(f'parameters.py','w') as f:f.write(repr(parameters))
 ionex=scaleForward(ionex,parameters)
 
 input_t_steps=36
-output_t_steps=24
+output_t_steps=1#24
 
-x,y=split_sequence(ionex,input_t_steps)
-datax=np.expand_dims(x,-1) #adding channel dimension
-datay=np.expand_dims(y,-1) #adding channel dimension
+ionex=np.expand_dims(ionex,-1) #adding channel dimension
+
+#x,y=split_sequence(ionex,input_t_steps)
+#datax=np.expand_dims(x,-1) #adding channel dimension
+#datay=np.expand_dims(y,-1) #adding channel dimension
 #datax=datax[-200:] #reducing dataset because it's taking too long to test
 #datay=datay[-200:]
 
-print("Input shape: ",datax.shape)
-print("Output shape: ",datay.shape)
+print("Input shape: ",ionex.shape)
 
-split = sklearn.model_selection.train_test_split(datax, datay, test_size=0.10, random_state=42)
-(trainX, testX, trainY, testY) = split
-split = sklearn.model_selection.train_test_split(trainX, trainY, test_size=0.20, random_state=42)
-(trainX, valX, trainY, valY) = split
+split = sklearn.model_selection.train_test_split(ionex, test_size=0.10, random_state=42)
+(trainX, testX) = split
+split = sklearn.model_selection.train_test_split(trainX, test_size=0.20, random_state=42)
+(trainX, valX) = split
 
-training_generator = DataGenerator(trainX, trainY, batch_size=batch_size)
-validation_generator = DataGenerator(valX, valY, batch_size=batch_size)
+print(trainX.shape)
+print(valX.shape)
+print(testX.shape)
 
-#from models.models
-model= ConvLSTM_121_Boulch_8units(datax[0].shape)
+training_generator = DataGenerator(trainX, batch_size=batch_size, nstepsin=input_t_steps, nstepsout=output_t_steps)
+validation_generator = DataGenerator(valX, batch_size=batch_size, nstepsin=input_t_steps, nstepsout=output_t_steps)
+
+batch_shape_x=training_generator[0][0][0].shape
+batch_shape_y=training_generator[0][1][0].shape
+
+#using only a single map shape
+model= ConvLSTM_121_Boulch_8units(batch_shape_x) 
 #model= ConvLSTM_121_Boulch_16units(datax[0].shape)
 #ConvLSTM_121_Boulch_16units
 

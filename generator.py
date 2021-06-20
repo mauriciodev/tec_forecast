@@ -3,14 +3,15 @@ import keras
 
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
-    def __init__(self, x, y,batch_size):
+    def __init__(self, x, batch_size, nstepsin=4, nstepsout=1, shuffle=True):
         'Initialization'
-        self.list_IDs=range(0,len(x)) #store the index to allow shuffling
+        self.list_IDs=range(0,len(x)-nstepsout+1-nstepsin) #store the index to allow shuffling
         self.x=x
-        self.y=y
+        self.nstepsin=nstepsin
+        self.nstepsout=nstepsout
         self.batch_size=batch_size
         self.dim=x[0].shape
-        self.shuffle=True
+        self.shuffle=shuffle
         self.on_epoch_end()
 
     def __len__(self):
@@ -39,15 +40,31 @@ class DataGenerator(keras.utils.Sequence):
     def __data_generation(self, list_IDs_temp):
         'Generates data containing batch_size samples' # X : (n_samples, *dim, n_channels)
         # Initialization
-        X = np.empty((self.batch_size, *self.x[0].shape ))
-        y = np.empty((self.batch_size, *self.y[0].shape ))
-
+        X = []
+        Y = []
         # Generate data
-        for i, ID in enumerate(list_IDs_temp):
-            # Store sample
-            X[i,] = self.x[ID]
+        for ID in list_IDs_temp:
+            x,y=self.split_sequence(ID)
+            X.append(x)
+            Y.append(y)
+        return np.array(X), np.array(Y)
 
-            # Store class
-            y[i] = self.y[ID]
+    def split_sequence(self, i):
+        # find the end of this pattern
+        end_ix = i + self.nstepsin
+        # check if we are beyond the sequence
+        if end_ix + self.nstepsout> len(self.x):
+            return None,None
+        # gather input and output parts of the pattern
+        seq_x, seq_y = self.x[i:end_ix], self.x[end_ix:end_ix+self.nstepsout]
+        if self.nstepsout==1: seq_y=seq_y[0] #this is because the network is not going to expect a vector
+        return seq_x,seq_y
 
-        return X, y
+
+if __name__=="__main__":
+    x=np.array(range(0,100))
+    gen=DataGenerator(x,10,nstepsin=36, nstepsout=24)
+    x,y=gen[0]
+    print(x[0])
+    print(y[0])
+    #print(gen.split_sequence(0))

@@ -5,16 +5,16 @@ import numpy as np
 
 
 # split a sequence into samples
-def split_sequence(sequence, n_steps):
+def split_sequence(sequence, n_steps, n_stepsout=1):
     X, y = list(), list()
     for i in range(len(sequence)):
         # find the end of this pattern
         end_ix = i + n_steps
         # check if we are beyond the sequence
-        if end_ix > len(sequence)-1:
+        if end_ix > len(sequence)-n_stepsout:
             break
         # gather input and output parts of the pattern
-        seq_x, seq_y = sequence[i:end_ix], sequence[end_ix]
+        seq_x, seq_y = sequence[i:end_ix], sequence[end_ix:end_ix+n_stepsout]
         X.append(seq_x)
         y.append(seq_y)
     return array(X), array(y)
@@ -65,3 +65,11 @@ def scaleBack(m,parameters):
 def scaleForward(m,parameters):
     m=(m-parameters["mean"])/(parameters["max"]-parameters["min"])
     return m
+
+
+if __name__=="__main__":
+    l=range(1,100)
+    print(l)
+    x,y=split_sequence(l,4,2)
+    print(x.shape)
+    print(y.shape)
