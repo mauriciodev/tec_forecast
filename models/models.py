@@ -11,9 +11,9 @@ def ConvLSTM_121_Boulch_8units(inputShape):
     name=sys._getframe().f_code.co_name #get function name to use on the model
     in_im = Input(shape=inputShape) 
     x=in_im
-    x=ConvLSTM2D(filters=8, kernel_size=(3, 3),padding='same',return_sequences=True)(x)
-    x=ConvLSTM2D(filters=8, kernel_size=(3, 3),dilation_rate=(2, 2),padding='same',return_sequences=True)(x) #5x5, actually 
-    x=ConvLSTM2D(filters=1, kernel_size=(3, 3),padding='same')(x)
+    x=ConvLSTM2D(filters=8, kernel_size=(3, 3),padding='valid',return_sequences=True)(x)
+    x=ConvLSTM2D(filters=8, kernel_size=(3, 3),dilation_rate=(2, 2),padding='valid',return_sequences=True)(x) #5x5, actually 
+    x=ConvLSTM2D(filters=1, kernel_size=(3, 3),padding='valid',return_sequences=True)(x)
     model = Model(in_im, x, name=name)
     return model 
 
@@ -27,3 +27,13 @@ def ConvLSTM_121_Boulch_16units(inputShape):
     x=ConvLSTM2D(filters=1, kernel_size=(3, 3),padding='same')(x)
     model = Model(in_im, x, name=name)
     return model 
+
+def ConvLSTM_121_Boulch_8units_nout(inputShape):
+    name=sys._getframe().f_code.co_name #get function name to use on the model
+    model = Sequential(name=name)
+    model.add(LSTM(8, activation='relu', input_shape=inputShape))
+    model.add(RepeatVector(n_outputs))
+    model.add(LSTM(8, activation='relu', return_sequences=True))
+    model.add(TimeDistributed(Dense(100, activation='relu')))
+    model.add(TimeDistributed(Dense(1)))
+    return model

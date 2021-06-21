@@ -1,5 +1,6 @@
 #https://machinelearningmastery.com/how-to-develop-lstm-models-for-multi-step-time-series-forecasting-of-household-power-consumption/
 #https://blog.keras.io/a-ten-minute-introduction-to-sequence-to-sequence-learning-in-keras.html
+#https://levelup.gitconnected.com/building-seq2seq-lstm-with-luong-attention-in-keras-for-time-series-forecasting-1ee00958decb
 
 from keras.layers import LSTM, ConvLSTM2D, Dense,BatchNormalization, Input
 from keras.callbacks import EarlyStopping
@@ -23,36 +24,32 @@ ionex=np.load("timeseries.npy")
 
 ## HYPER PARAMETERS ##
 batch_size=8
+input_t_steps=36
+output_t_steps=1#24
 
 #We need to save these for prediction
 print("Saving scaling information on parameters.py. If you change the input data, please remove the file and retrain.")
-parameters =  { "mean" : ionex.mean() , "max": ionex.max(), "min": 0}
+parameters =  { "mean" : ionex.mean() , "max": ionex.max(), "min": 0, "input_t_steps": input_t_steps}
 with open(f'parameters.py','w') as f:f.write(repr(parameters))
 
 #scaling
 ionex=scaleForward(ionex,parameters)
-
-input_t_steps=36
-output_t_steps=1#24
-
 ionex=np.expand_dims(ionex,-1) #adding channel dimension
 
-#x,y=split_sequence(ionex,input_t_steps)
-#datax=np.expand_dims(x,-1) #adding channel dimension
-#datay=np.expand_dims(y,-1) #adding channel dimension
-#datax=datax[-200:] #reducing dataset because it's taking too long to test
-#datay=datay[-200:]
+ionex=ionex[-24*40:] #using one week for testing purposes. Please comment later.
 
 print("Input shape: ",ionex.shape)
 
-split = sklearn.model_selection.train_test_split(ionex, test_size=0.10, random_state=42)
-(trainX, testX) = split
-split = sklearn.model_selection.train_test_split(trainX, test_size=0.20, random_state=42)
-(trainX, valX) = split
+#split = sklearn.model_selection.train_test_split(ionex, test_size=0.10, random_state=42)
+#(trainX, testX) = split
+#split = sklearn.model_selection.train_test_split(trainX, test_size=0.20, random_state=42)
+#(trainX, valX) = split
+split=int(len(ionex)*(1-0.2)) #using 20% as validation data.
+trainX=ionex[:split]
+valX=ionex[split:]
 
 print(trainX.shape)
 print(valX.shape)
-print(testX.shape)
 
 training_generator = DataGenerator(trainX, batch_size=batch_size, nstepsin=input_t_steps, nstepsout=output_t_steps)
 validation_generator = DataGenerator(valX, batch_size=batch_size, nstepsin=input_t_steps, nstepsout=output_t_steps)
@@ -72,25 +69,11 @@ mse = tf.keras.losses.MeanSquaredError()
 model.compile(optimizer='adam', loss=mse,metrics=['mean_squared_error'])
 
 print("Model fitting")
-callback = tf.keras.callbacks.EarlyStopping(monitor='loss', min_delta=0.01,patience=3)
-checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(getModelFileName(model.name), monitor='loss', verbose=1, save_best_only=True)
+callback = tf.keras.callbacks.EarlyStopping(monitor='val_mean_squared_error', min_delta=0.001,patience=3)
+checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(getModelFileName(model.name), monitor='val_mean_squared_error', verbose=1, save_best_only=True)
 
 history=model.fit(training_generator,validation_data=validation_generator, epochs=100, verbose=True, callbacks = [callback,checkpoint_callback]) # You: Define patience (between 10 and 15 is ok)
-plotHistory(history,f'history{model.name}.png')
+plotHistory(history,os.path.join('models',f'{model.name}_history.png'))
 
 
-print("Testing")
-fileName=getModelFileName(model.name)
-print(f"Loading model {fileName}")
-model = tf.keras.models.load_model(fileName)
 
-ynew = model.predict(testX)
-
-from sklearn.metrics import r2_score,mean_squared_error
-flatY=testY.reshape(-1)
-flatYnew= ynew.reshape(-1)
-
-print("R2 ",r2_score(flatY,flatYnew))
-print("RMSE ",mean_squared_error(flatY,flatYnew))
-
-print("ok")

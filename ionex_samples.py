@@ -4,15 +4,12 @@ import re,time,os
 from datetime import datetime
 latlon=(10,20)
 
-
-
-
-
 class ionexreader:
-    def __init__(self):
+    def __init__(self,rootFolder):
         self.lonValues=[0,0,0] #min, max, delta
         self.latValues=[0,0,0] #min, max, delta
         self.heighValues=[0,0,0] #min, max, delta
+        self.root=rootFolder
 
     def chunks(self,l, n):  #split a line in chunks of size n
         return [l[i:i+n].strip() for i in range(0, len(l), n)]
@@ -86,30 +83,36 @@ class ionexreader:
         outputArray=np.array(matrixList)
         return outputArray
 
+    def concatenateYear(self,year,outputFile):
+        matrixList=None
+        for d in range(1,365):
+            f=os.path.join(self.root,f"codg{d:003d}0.{year}i.npy")
+            ionex=np.load(f)
+            if matrixList is None:
+                matrixList=ionex[:24]
+            else:
+                matrixList=np.concatenate((matrixList,ionex[:24]))
+        with open(outputFile, 'wb') as f:
+            np.save(f,matrixList)     
+
+    def createNPYMatricesOnFolder(self):
+        for fileName in os.listdir(self.root):
+            if fileName.endswith("i"):
+                ionex=os.path.join(self.root,fileName)
+                if not os.path.exists(ionex+".npy"):
+                    arr=self.read2DIonex(ionex)
+                    with open(ionex+'.npy', 'wb') as f:
+                        np.save(f,arr)
 
 if __name__=="__main__":
-
-    root="./ionex/"
-    for fileName in os.listdir(root):
-        if fileName.endswith("i"):
-
-            ionex=os.path.join(root,fileName)
-            if not os.path.exists(ionex+".npy"):
-                reader=ionexreader()
-                arr=reader.read2DIonex(ionex)
-                with open(ionex+'.npy', 'wb') as f:
-                    np.save(f,arr)
+    reader=ionexreader("./ionex/")
+    reader.createNPYMatricesOnFolder()
     
-    matrixList=None
-    for d in range(1,365):
-        f=f"ionex/codg{d:003d}0.20i.npy"
-        ionex=np.load(f)
-        if matrixList is None:
-            matrixList=ionex[:24]
-        else:
-            matrixList=np.concatenate((matrixList,ionex[:24]))
+    year=20 
+    print("Training data saved in timeseries.npy")
+    reader.concatenateYear(year,"timeseries.npy")
+    year=19 #Test data
+    print("Test data saved in timeseries19.npy")
+    reader.concatenateYear(year,"timeseries19.npy")
 
-
-    with open("timeseries.npy", 'wb') as f:
-        np.save(f,matrixList)     
         
