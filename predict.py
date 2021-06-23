@@ -45,12 +45,13 @@ else:
     test_generator = DataGenerator(ionex, batch_size=1, nstepsin=input_t_steps, nstepsout=output_t_steps,shuffle=False, training=False)
     
     datax,datay=test_generator.asArray()
-
-    #single step prediction
-
+    #saveGif(datax[0][:25],'output/t_rot.gif',clearFrames=False)
+    #saveGif(ionex[:25],'output/t_notrot.gif',clearFrames=False)
 
     ynew = model.predict(datax)
     ynew=np.expand_dims(ynew,1)
+
+    saveGif(np.squeeze(ynew[0]),'output/ynew.gif',clearFrames=False)
 
     fig, axs = plt.subplots(2)
     fig.suptitle('Prediction and real')
@@ -99,9 +100,9 @@ else:
     axs[1].imshow(np.squeeze(Ypred),extent=[-180,180,-90,90])
     plt.savefig(fileName.split(".")[0]+"_visual_difference_24.png", bbox_inches='tight')
     plt.close()
-    saveGif(datax[start],'teste.gif', clearFrames=False)
+    saveGif(datax[start],'output/teste.gif', clearFrames=False)
     
-
+    
 
     #TODO:This is UNFINISHED WE 
     #lastmap=scaleBack(ynew[-1],parameters)

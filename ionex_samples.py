@@ -11,6 +11,10 @@ class ionexreader:
         self.heighValues=[0,0,0] #min, max, delta
         self.root=rootFolder
 
+
+    def constantToMap(c,inputShape):
+        return np.full(inputShape, c)
+    
     def chunks(self,l, n):  #split a line in chunks of size n
         return [l[i:i+n].strip() for i in range(0, len(l), n)]
 
@@ -83,11 +87,20 @@ class ionexreader:
         outputArray=np.array(matrixList)
         return outputArray
 
-    def concatenateYear(self,year,outputFile):
+    def concatenateYear(self,year,outputFile,useSpaceWeather=True):
         matrixList=None
-        for d in range(1,365):
+        if useSpaceWeather:
+            from spaceweather.indicesdownloader import indicesDownloader
+            spaceweatherfolder=os.path.join(os.getcwd(),'spaceweather')
+            downloader=indicesDownloader()
+            weatherdf=downloader.getInterpolatedIndexes(2000+year,spaceweatherfolder)
+        leap= 0 if (2000+year)%4 else 1
+        for d in range(1,366+leap):
             f=os.path.join(self.root,f"codg{d:003d}0.{year}i.npy")
             ionex=np.load(f)
+
+            #GOTTA ADD SPACE WEATHER DATA 
+
             if matrixList is None:
                 matrixList=ionex[:24]
             else:
@@ -104,9 +117,15 @@ class ionexreader:
                     with open(ionex+'.npy', 'wb') as f:
                         np.save(f,arr)
 
+    
+    
+
 if __name__=="__main__":
     reader=ionexreader("./ionex/")
     reader.createNPYMatricesOnFolder()
+    
+    useSpaceWeather=True
+    #SHOULD FINISH THIS!
     
     year=20 
     print("Training data saved in timeseries.npy")
@@ -115,4 +134,5 @@ if __name__=="__main__":
     print("Test data saved in timeseries19.npy")
     reader.concatenateYear(year,"timeseries19.npy")
 
+    
         

@@ -30,21 +30,21 @@ def plotMap(m):
 
 
 def plotHistory(history,filename):
-    mse = history.history['mean_squared_error']
-    val_mse = history.history['val_mean_squared_error']
+    mse = history.history['mean_absolute_error']
+    val_mse = history.history['val_mean_absolute_error']
 
     loss = history.history['loss']
     val_loss = history.history['val_loss']
 
     plt.figure(figsize=(8, 8))
     plt.subplot(2, 1, 1)
-    plt.plot(mse, label='Training MSE')
-    plt.plot(val_mse, label='Validation MSE')
+    plt.plot(mse, label='Training MAE')
+    plt.plot(val_mse, label='Validation MAE')
     plt.legend(loc='lower right')
-    plt.ylabel('Mean Square Error')
+    plt.ylabel('Mean Absolute Error')
     ymax=max(max(mse),max(val_mse))
     plt.ylim([min(plt.ylim()),ymax])
-    plt.title('Training and Validation MSE')
+    plt.title('Training and Validation MAE')
 
     plt.subplot(2, 1, 2)
     plt.plot(loss, label='Training Loss')
@@ -66,10 +66,12 @@ def scaleForward(m,parameters):
     m=(m-parameters["mean"])/(parameters["max"]-parameters["min"])
     return m
 
-
-if __name__=="__main__":
+def main():
     l=range(1,100)
     print(l)
     x,y=split_sequence(l,4,2)
     print(x.shape)
     print(y.shape)
+
+if __name__=="__main__":
+    main()
