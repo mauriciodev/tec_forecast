@@ -89,7 +89,7 @@ class indicesDownloader():
         #    logging.warning("File not found: "+url) 
     
 
-def plotSeries(df,title):
+def plotSeries(df,title,measure="Ap"):
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.set_title(title)
     ax.grid(True)
@@ -98,8 +98,8 @@ def plotSeries(df,title):
     ax.xaxis.set_major_locator(AutoDateLocator())
     ax.xaxis.set_major_formatter(DateFormatter('%b %d %Y'))
     # Plotting on the first y-axis
-    ax.set_ylabel('Ap')
-    ax.plot(df.index, df["Ap"], color='tab:orange', label='AP')
+    ax.set_ylabel(measure)
+    ax.plot(df.index, df[measure], color='tab:orange', label=measure)
     name=title.replace(" ","_")
     plt.savefig(f"{name}.png",bbox_inches='tight')
 
@@ -109,6 +109,7 @@ def main():
     apdf=downloader.getIndexes(year,"./postdam2/")
     
     plotSeries(apdf,f'Ap time series of year {year}')
+    plotSeries(apdf,f'F10.7cm time series of year {year}',"F107adj")
     idf=downloader.interpolate(apdf)
 
     apdf=apdf[(apdf.index>=pd.Timestamp("2019-06-13")) & (apdf.index<=pd.Timestamp("2019-06-15"))]

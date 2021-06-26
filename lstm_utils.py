@@ -21,7 +21,7 @@ def split_sequence(sequence, n_steps, n_stepsout=1):
 
 def getModelFileName(name):
     root_path=os.getcwd()
-    return os.path.join(root_path,'models',name+'.h5')
+    return os.path.join(root_path,'models',f'{name}.h5')
 
 def plotMap(m):
     m=np.moveaxis(m,-1,0)[0]
@@ -65,6 +65,36 @@ def scaleBack(m,parameters):
 def scaleForward(m,parameters):
     m=(m-parameters["mean"])/(parameters["max"]-parameters["min"])
     return m
+
+def plotTwins(ma, mb, title, outputFile,shareColorBar=False,ylabel1='',ylabel2=''):
+    fig, axs = plt.subplots(2)
+    fig.suptitle(title)
+    
+    if shareColorBar:
+        vmin=ma.min()
+        vmax=ma.max()
+        a=axs[0].imshow(np.squeeze(ma),extent=[-180,180,-90,90],vmin=vmin,vmax=vmax)    
+        b=axs[1].imshow(np.squeeze(mb),extent=[-180,180,-90,90],vmin=vmin,vmax=vmax)
+    else:
+        a=axs[0].imshow(np.squeeze(ma),extent=[-180,180,-90,90])    
+        b=axs[1].imshow(np.squeeze(mb),extent=[-180,180,-90,90])
+    axs[0].set_xlabel(ylabel1)
+    axs[0].set_xlabel(ylabel2)
+    fig.colorbar(a,ax=axs[0])
+    fig.colorbar(b,ax=axs[1])
+    plt.savefig(outputFile, bbox_inches='tight')
+    plt.close()
+
+def getDataSubset(ionex,modelName):
+    if modelName=="c111_Ap" or modelName=="c353_Ap": 
+        ionex=ionex[:,:,:,[0,1]] #use tec and ap
+    elif modelName=="c111_F107AP" or modelName=="c353_F107AP":
+        pass
+    elif modelName=="c111_F107" or modelName=="c353_F107":
+        ionex=ionex[:,:,:,[0,2]] #use tec and F107
+    else:
+        ionex=ionex[:,:,:,[0]] #use only tec
+    return ionex
 
 def main():
     l=range(1,100)

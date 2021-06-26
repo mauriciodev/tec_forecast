@@ -4,7 +4,7 @@ import pandas as pd
 
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
-    def __init__(self, x, batch_size, nstepsin=4, nstepsout=1, shuffle=True,training=True, removeRotation=True,indicesdf=None):
+    def __init__(self, x, batch_size, nstepsin=4, nstepsout=1, shuffle=True,training=True, removeRotation=False,indicesdf=None):
         'Initialization'
         super().__init__()
         self.list_IDs=range(0,len(x)-nstepsout+1-nstepsin) #store the index to allow shuffling

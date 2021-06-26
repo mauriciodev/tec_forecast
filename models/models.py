@@ -1,36 +1,75 @@
 from tensorflow.keras.layers import Input, Dense, Conv2D, Conv3D, MaxPool2D, Flatten, Dropout, Conv2DTranspose, ConvLSTM2D, Activation, BatchNormalization, Bidirectional, TimeDistributed, AveragePooling2D
 from tensorflow.keras.models import Model, Sequential
 import sys
-
+import tensorflow as tf
+    #https://blog.keras.io/a-ten-minute-introduction-to-sequence-to-sequence-learning-in-keras.html
 
 # 121 Convolutional model (Boulch, 2018)
 # Changes: 
 # - tanh activation instead of relu. Data was normalized with negative numbers. ReLu doesn't reach negatives.
-# - Conv2D 1x1 instead of no classification head. Not sure if this was needed since we have a single layer, but it should be when we have more.
-def ConvLSTM_121_Boulch_8units(inputShape,n_steps_out):
-    #https://blog.keras.io/a-ten-minute-introduction-to-sequence-to-sequence-learning-in-keras.html
+def c353_Boulch(inputShape,filters=8):
+    channels=inputShape[-1]
     name=sys._getframe().f_code.co_name #get function name to use on the model
     in_im = Input(shape=inputShape) 
     x=in_im
     #encoder
-    lstm1=ConvLSTM2D(filters=8, kernel_size=(3, 3),padding='same',return_sequences=True,return_state=True)
+    lstm1=ConvLSTM2D(filters=filters, kernel_size=(3, 3),padding='same',return_sequences=True,return_state=True)
     x,state_h1,state_c1=lstm1(x)
-    lstm2=ConvLSTM2D(filters=8, kernel_size=(3, 3),padding='same',return_sequences=True,return_state=True,dilation_rate=(2, 2))
+    lstm2=ConvLSTM2D(filters=filters, kernel_size=(3, 3),padding='same',return_sequences=True,return_state=True,dilation_rate=(2, 2))
     x,state_h2,state_c2=lstm2(x) #5x5, actually 
-    lstm3=ConvLSTM2D(filters=1, kernel_size=(3, 3),padding='same',return_state=True)
+    lstm3=ConvLSTM2D(filters=channels, kernel_size=(3, 3),padding='same',return_sequences=True,return_state=True)
     x,state_h3,state_c3=lstm3(x)
+    x=tf.keras.layers.Add()([x,in_im])
     encmodel = Model(in_im, x, name=name)
-    
-    """outputShape=(n_steps_out,*inputShape[1:])
-    in_im = Input(shape=outputShape) 
-    x=in_im
-    x,state_h1,state_c1=lstm1(x)
-    x,state_h2,state_c2=lstm2(x)
-    x,state_h3,state_c3=lstm3(x)
-    decmodel = Model([in_im, x, name=name)"""
     return encmodel#,decmodel, trainmodel
 
+def c111(inputShape,filters=8):
+    channels=inputShape[-1]
+    name=sys._getframe().f_code.co_name #get function name to use on the model
+    in_im = Input(shape=inputShape) 
+    x=in_im
+    #encoder
+    lstm1=ConvLSTM2D(filters=filters, kernel_size=(1, 1),padding='same',return_sequences=True,return_state=True)
+    x,state_h1,state_c1=lstm1(x)
+    lstm2=ConvLSTM2D(filters=filters, kernel_size=(1, 1),padding='same',return_sequences=True,return_state=True)
+    x,state_h2,state_c2=lstm2(x) #5x5, actually 
+    lstm3=ConvLSTM2D(filters=channels, kernel_size=(1, 1),padding='same',return_sequences=True,return_state=True)
+    x,state_h3,state_c3=lstm3(x)
+    x=tf.keras.layers.Add()([x,in_im])
+    encmodel = Model(in_im, x, name=name)
+    return encmodel#,decmodel, trainmodel
 
+def c111_Ap(inputShape):
+    model =c111(inputShape,filters=16)
+    model._name=sys._getframe().f_code.co_name
+    return model
+
+def c353_Ap(inputShape):
+    model =c353_Boulch(inputShape,filters=16)
+    model._name=sys._getframe().f_code.co_name
+    return model
+
+def c111_F107(inputShape):
+    model =c111(inputShape,filters=16)
+    model._name=sys._getframe().f_code.co_name
+    return model
+
+def c353_F107(inputShape):
+    model =c353_Boulch(inputShape,filters=16)
+    model._name=sys._getframe().f_code.co_name
+    return model
+
+def c111_F107AP(inputShape):
+    model =c111(inputShape,filters=24)
+    model._name=sys._getframe().f_code.co_name
+    return model
+
+def c353_F107AP(inputShape):
+    model =c353_Boulch(inputShape,filters=24)
+    model._name=sys._getframe().f_code.co_name
+    return model
+
+"""
 # returns train, inference_encoder and inference_decoder models
 def define_models(inputShape, n_output, n_units):
 	# define training encoder
@@ -57,24 +96,6 @@ def define_models(inputShape, n_output, n_units):
 	decoder_model = Model([decoder_inputs] + decoder_states_inputs, [decoder_outputs] + decoder_states)
 	# return all models
 	return model, encoder_model, decoder_model
+"""
 
 # - Conv2D 1x1 instead of no classification head. Not sure if this was needed since we have a single layer, but it should be when we have more.
-def ConvLSTM_121_Boulch_16units(inputShape):
-    name=sys._getframe().f_code.co_name #get function name to use on the model
-    in_im = Input(shape=inputShape) 
-    x=in_im
-    x=ConvLSTM2D(filters=16, kernel_size=(3, 3),padding='same',return_sequences=True)(x)
-    x=ConvLSTM2D(filters=16, kernel_size=(3, 3),dilation_rate=(2, 2),padding='same',return_sequences=True)(x) #5x5, actually 
-    x=ConvLSTM2D(filters=1, kernel_size=(3, 3),padding='same')(x)
-    model = Model(in_im, x, name=name)
-    return model 
-
-def ConvLSTM_121_Boulch_8units_nout(inputShape):
-    name=sys._getframe().f_code.co_name #get function name to use on the model
-    model = Sequential(name=name)
-    model.add(LSTM(8, activation='relu', input_shape=inputShape))
-    model.add(RepeatVector(n_outputs))
-    model.add(LSTM(8, activation='relu', return_sequences=True))
-    model.add(TimeDistributed(Dense(100, activation='relu')))
-    model.add(TimeDistributed(Dense(1)))
-    return model

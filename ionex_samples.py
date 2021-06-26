@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import re,time,os
-from datetime import datetime
+from datetime import datetime,timedelta
 latlon=(10,20)
 
 class ionexreader:
@@ -93,18 +93,27 @@ class ionexreader:
             from spaceweather.indicesdownloader import indicesDownloader
             spaceweatherfolder=os.path.join(os.getcwd(),'spaceweather')
             downloader=indicesDownloader()
-            weatherdf=downloader.getInterpolatedIndexes(2000+year,spaceweatherfolder)
-        leap= 0 if (2000+year)%4 else 1
+            weatherdf=downloader.getInterpolatedIndexes(year,spaceweatherfolder)
+        leap= 0 if (year)%4 else 1
         for d in range(1,366+leap):
-            f=os.path.join(self.root,f"codg{d:003d}0.{year}i.npy")
-            ionex=np.load(f)
+            f=os.path.join(self.root,f"codg{d:003d}0.{year%100}i.npy")
+            day=datetime.strptime(f'{year} {d}', '%Y %j')
+            ionex=np.load(f)[:24] #last hour is repeated
+            ionex=np.expand_dims(ionex,-1) #adding channel dimension
 
-            #GOTTA ADD SPACE WEATHER DATA 
-
+            if useSpaceWeather:
+                mapShape=ionex[0].shape
+                #yeah, numpy is amazing. Transforming pandas to stacked images in 4 lines
+                dailyIndices=weatherdf[(weatherdf.index>=day) & (weatherdf.index<day+timedelta(1))]
+                baseMatrix=dailyIndices[['Ap','F107adj']].to_numpy() #
+                m=np.full((*mapShape[:-1],*baseMatrix.shape), baseMatrix)
+                m=np.moveaxis(m,2,0) #done
+                ionex=np.concatenate([ionex,m],-1) #built the 2 extra maps.
             if matrixList is None:
-                matrixList=ionex[:24]
+                matrixList=ionex
             else:
-                matrixList=np.concatenate((matrixList,ionex[:24]))
+                matrixList=np.concatenate((matrixList,ionex))
+            #print(len(ionex)) #used this to check if everyone had 24 hours
         with open(outputFile, 'wb') as f:
             np.save(f,matrixList)     
 
@@ -124,15 +133,15 @@ if __name__=="__main__":
     reader=ionexreader("./ionex/")
     reader.createNPYMatricesOnFolder()
     
-    useSpaceWeather=True
-    #SHOULD FINISH THIS!
-    
-    year=20 
+   
+    year=2020 
     print("Training data saved in timeseries.npy")
-    reader.concatenateYear(year,"timeseries.npy")
-    year=19 #Test data
+    reader.concatenateYear(year,"timeseries.npy",useSpaceWeather=False)
+    reader.concatenateYear(year,"timeseries_ind.npy",useSpaceWeather=True)
+    year=2019 #Test data
     print("Test data saved in timeseries19.npy")
-    reader.concatenateYear(year,"timeseries19.npy")
+    reader.concatenateYear(year,"timeseries19.npy",useSpaceWeather=False)
+    reader.concatenateYear(year,"timeseries19_ind.npy",useSpaceWeather=True)
 
     
         
