@@ -29,7 +29,7 @@ scalerParamsFile=os.path.join('models',f"params_{name}.py")
 print(f"Loading scaling parameters from {scalerParamsFile}")
 with open(scalerParamsFile, 'r') as f: parameters = eval(f.read())
 
-output_t_steps=24
+output_t_steps=12
 
 fileName=getModelFileName(name)
 if not os.path.exists(fileName):
@@ -50,7 +50,7 @@ ionex=np.load(timeSeriesFile)
 ionex=getDataSubset(ionex,model.name)
 
 #reducing the number of test samples to use only one week
-ionex=ionex[-7*24:]
+ionex=ionex[-14*24:]
 
 #scaling
 ionex=(ionex-parameters["mean"])/(parameters["max"]-parameters["min"])

@@ -76,7 +76,7 @@ mse = tf.keras.losses.MeanSquaredError()
 model.compile(optimizer='adam', loss="mean_absolute_error",metrics=['mean_absolute_error'])
 
 print("Model fitting")
-callback = tf.keras.callbacks.EarlyStopping(monitor='val_mean_absolute_error', min_delta=0.001,patience=3)
+callback = tf.keras.callbacks.EarlyStopping(monitor='val_mean_absolute_error', min_delta=0.001,patience=5)
 checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(getModelFileName(model.name), monitor='val_mean_absolute_error', verbose=1, save_best_only=True)
 
 history=model.fit(training_generator,validation_data=validation_generator, epochs=100, verbose=True, callbacks = [callback,checkpoint_callback])

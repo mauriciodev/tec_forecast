@@ -7,7 +7,7 @@ import tensorflow as tf
 # 121 Convolutional model (Boulch, 2018)
 # Changes: 
 # - tanh activation instead of relu. Data was normalized with negative numbers. ReLu doesn't reach negatives.
-def c353_Boulch(inputShape,filters=8):
+def c353_Boulch(inputShape,filters=16):
     channels=inputShape[-1]
     name=sys._getframe().f_code.co_name #get function name to use on the model
     in_im = Input(shape=inputShape) 
@@ -23,7 +23,7 @@ def c353_Boulch(inputShape,filters=8):
     encmodel = Model(in_im, x, name=name)
     return encmodel#,decmodel, trainmodel
 
-def c111(inputShape,filters=8):
+def c111(inputShape,filters=16):
     channels=inputShape[-1]
     name=sys._getframe().f_code.co_name #get function name to use on the model
     in_im = Input(shape=inputShape) 
@@ -40,32 +40,32 @@ def c111(inputShape,filters=8):
     return encmodel#,decmodel, trainmodel
 
 def c111_Ap(inputShape):
-    model =c111(inputShape,filters=16)
+    model =c111(inputShape,filters=32)
     model._name=sys._getframe().f_code.co_name
     return model
 
 def c353_Ap(inputShape):
-    model =c353_Boulch(inputShape,filters=16)
+    model =c353_Boulch(inputShape,filters=32)
     model._name=sys._getframe().f_code.co_name
     return model
 
 def c111_F107(inputShape):
-    model =c111(inputShape,filters=16)
+    model =c111(inputShape,filters=32)
     model._name=sys._getframe().f_code.co_name
     return model
 
 def c353_F107(inputShape):
-    model =c353_Boulch(inputShape,filters=16)
+    model =c353_Boulch(inputShape,filters=32)
     model._name=sys._getframe().f_code.co_name
     return model
 
 def c111_F107AP(inputShape):
-    model =c111(inputShape,filters=24)
+    model =c111(inputShape,filters=48)
     model._name=sys._getframe().f_code.co_name
     return model
 
 def c353_F107AP(inputShape):
-    model =c353_Boulch(inputShape,filters=24)
+    model =c353_Boulch(inputShape,filters=48)
     model._name=sys._getframe().f_code.co_name
     return model
 
