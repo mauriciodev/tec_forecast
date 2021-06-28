@@ -21,7 +21,7 @@ from generator import DataGenerator
 import sys
 tf.config.experimental.set_memory_growth(tf.config.get_visible_devices()[1], True)
 #Model name is used to load the weights and recover prediction parameters.
-name="c353_Boulch"
+name="c111" #c353_Boulch
 if len(sys.argv)>1:
     name=sys.argv[1]
 
@@ -50,7 +50,9 @@ ionex=np.load(timeSeriesFile)
 ionex=getDataSubset(ionex,model.name)
 
 #reducing the number of test samples to use only one week
-ionex=ionex[-14*24:]
+initialdate=15
+frames=14*24
+ionex=ionex[initialdate:initialdate+frames]
 
 #scaling
 ionex=(ionex-parameters["mean"])/(parameters["max"]-parameters["min"])
@@ -117,36 +119,25 @@ r2_last=r2_score(flatY,flatYnew)
 print("R2 ",r2_last)
 
 
-plotTwins(
+
+plotTwinsAndError(
     ionex[start+input_t_steps,:,:,0],
     datax[start][input_t_steps,:,:,0],
-    'Reference and prediction on first frame', f"output/{name}/visual_difference_first.png",
+    datax[start][input_t_steps,:,:,0]-ionex[start+input_t_steps,:,:,0],
+    'Reference and prediction on first frame', f"output/{name}/compare_first.png",
     shareColorBar=True, 
     ylabel2="Prediction",
-    ylabel1="Reference"
-)
-plotTwins(
-    ionex[start+input_t_steps,:,:,0],
-    datax[start][input_t_steps,:,:,0]-ionex[start+input_t_steps,:,:,0],
-    'Reference and prediction error on first frame',f"output/{name}/num_difference_first.png",
-    ylabel2="Prediction error (Ypred-Yreal)",
     ylabel1="Reference"
 )
 
-plotTwins(
+plotTwinsAndError(
     ionex[start+input_t_steps+pred_hour,:,:,0],
     datax[start][input_t_steps+pred_hour,:,:,0],
-    'Reference and prediction on last frame', f"output/{name}/visual_difference_last.png",
-    shareColorBar=True, 
-    ylabel2="Prediction",
-    ylabel1="Reference"
-)
-plotTwins(
-    ionex[start+input_t_steps+pred_hour,:,:,0],
     datax[start][input_t_steps+pred_hour,:,:,0]-ionex[start+input_t_steps+pred_hour,:,:,0],
-    'Reference and prediction error on last frame',f"output/{name}/num_difference_last.png",
-    ylabel2="Prediction error (Ypred-Yreal)",
-    ylabel1="Reference"
+    'Reference and prediction on last frame',f"output/{name}/compare_last.png",
+    shareColorBar=True,
+    ylabel2="Prediction",
+    ylabel1="Reference"        
 )
 
 
@@ -157,6 +148,7 @@ error=tec-ref_tec
 pixelsPerMap=tec.shape[2]*tec.shape[3]
 rmse_per_hour=np.sqrt(np.sum(error**2, axis=(0,2,3))/(pixelsPerMap*error.shape[0]))
 mae_per_hour=np.average(np.abs(error), axis=(0,2,3))
+max_per_hour=np.max(np.abs(error), axis=(0,2,3))
 print(rmse_per_hour)
 print(mae_per_hour)
 
@@ -172,15 +164,18 @@ modelResults={
     "parameters": model.count_params(),
     "r2_1st": r2_1,
     "rmse_1st": rmse_per_hour[0],
+    "max_1st": max_per_hour[0],
     "r2_last":r2_last,
     "rmse_last":rmse_per_hour[-1],
+    "max_last": max_per_hour[-1],
     "rmse_per_hour": rmse_per_hour,
-    "mae_per_hour": mae_per_hour
+    "mae_per_hour": mae_per_hour,
+    "max_per_hour": max_per_hour
 }
 results[name]=modelResults
 with open(resultsFile,'w') as f:f.write(repr(results))
 
-for modelName in results.keys():
+for modelName in sorted(results.keys()):
     plt.plot(results[modelName]["rmse_per_hour"], label = modelName)
 plt.xlabel('Frames of prediction')
 plt.ylabel('RMSE (TEC units)')
@@ -189,13 +184,22 @@ plt.legend()
 plt.savefig("output/rmse.png", bbox_inches='tight')
 plt.close()
 
-for modelName in results.keys():
+for modelName in sorted(results.keys()):
     plt.plot(results[modelName]["mae_per_hour"], label = modelName)
 plt.xlabel('Frames of prediction')
 plt.ylabel('MAE (TEC units)')
 plt.title('Prediction MAE per frame')
 plt.legend()
 plt.savefig("output/mae.png", bbox_inches='tight')
+plt.close()
+
+for modelName in sorted(results.keys()):
+    plt.plot(results[modelName]["max_per_hour"], label = modelName)
+plt.xlabel('Frames of prediction')
+plt.ylabel('Max error (TEC units)')
+plt.title('Prediction max error per frame')
+plt.legend()
+plt.savefig("output/max.png", bbox_inches='tight')
 plt.close()
 
 

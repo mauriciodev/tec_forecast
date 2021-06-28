@@ -78,10 +78,32 @@ def plotTwins(ma, mb, title, outputFile,shareColorBar=False,ylabel1='',ylabel2='
     else:
         a=axs[0].imshow(np.squeeze(ma),extent=[-180,180,-90,90])    
         b=axs[1].imshow(np.squeeze(mb),extent=[-180,180,-90,90])
-    axs[0].set_xlabel(ylabel1)
-    axs[0].set_xlabel(ylabel2)
+    axs[0].set_ylabel(ylabel1)
+    axs[1].set_ylabel(ylabel2)
     fig.colorbar(a,ax=axs[0])
     fig.colorbar(b,ax=axs[1])
+    plt.savefig(outputFile, bbox_inches='tight')
+    plt.close()
+    
+def plotTwinsAndError(ma, mb, merror, title, outputFile,shareColorBar=False,ylabel1='',ylabel2='',ylabel3="Difference"):
+    fig, axs = plt.subplots(3)
+    fig.suptitle(title)
+    
+    if shareColorBar:
+        vmin=ma.min()
+        vmax=ma.max()
+        a=axs[0].imshow(np.squeeze(ma),extent=[-180,180,-90,90],vmin=vmin,vmax=vmax)    
+        b=axs[1].imshow(np.squeeze(mb),extent=[-180,180,-90,90],vmin=vmin,vmax=vmax)
+    else:
+        a=axs[0].imshow(np.squeeze(ma),extent=[-180,180,-90,90])    
+        b=axs[1].imshow(np.squeeze(mb),extent=[-180,180,-90,90])
+    axs[0].set_ylabel(ylabel1)
+    axs[1].set_ylabel(ylabel2)
+    fig.colorbar(a,ax=axs[0])
+    fig.colorbar(b,ax=axs[1])
+    c=axs[2].imshow(np.squeeze(merror),extent=[-180,180,-90,90])
+    fig.colorbar(c,ax=axs[2])
+    axs[2].set_ylabel(ylabel3)
     plt.savefig(outputFile, bbox_inches='tight')
     plt.close()
 
