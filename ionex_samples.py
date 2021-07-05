@@ -105,7 +105,7 @@ class ionexreader:
                 mapShape=ionex[0].shape
                 #yeah, numpy is amazing. Transforming pandas to stacked images in 4 lines
                 dailyIndices=weatherdf[(weatherdf.index>=day) & (weatherdf.index<day+timedelta(1))]
-                baseMatrix=dailyIndices[['Ap','F107adj']].to_numpy() #
+                baseMatrix=dailyIndices[['Ap','F107obs']].to_numpy() #
                 m=np.full((*mapShape[:-1],*baseMatrix.shape), baseMatrix)
                 m=np.moveaxis(m,2,0) #done
                 ionex=np.concatenate([ionex,m],-1) #built the 2 extra maps.
