@@ -1,40 +1,40 @@
 comment,experiment_name,batch_train,batch_test,tested,compare,batch_size,num_epochs,filters,model,prediction,lag_window,prediction_window,train_time_sampling,test_time_sampling,resample_rate,train_npy_dataset,test_npy_dataset,random_seed,loss,optimizer,best_of
-None,Repeat_19-20,True,True,True,True,4,30,8,usePrevious,seq2seq,36,12,2,2,12,timeseries19_ind.npy,timeseries_ind.npy,1,mae,adam,5
-None,Repeat_14-15,False,False,True,True,4,30,8,usePrevious,seq2seq,36,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
-This is not a model,c1pg,False,False,True,True,1,1,0,c1pg,seq2seq,36,12,2,2,12,c1pg20.npy,timeseries_ind.npy,1,mae,adam,1
+None,Repeat_19-20,True,True,True,True,4,30,8,usePrevious,seq2seq,36,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
+None,Repeat_14-15,True,True,True,True,4,30,8,usePrevious,seq2seq,36,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
+This is not a model,c1pg,False,False,True,True,1,1,0,c1pg,seq2seq,36,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,1
 This is not a model,c1pg14-15,False,False,True,True,1,1,0,c1pg,seq2seq,36,12,2,2,12,c1pg2015.npy,codg2015.npy,1,mae,adam,1
-Very low memory consumption,ANN_NtoN_12_2,False,False,True,True,32,200,150,ANN,seq2seq,12,12,2,2,12,timeseries19_ind.npy,timeseries_ind.npy,1,mae,adam,5
-Very low memory consumption,ANN_NtoN_18_2,False,False,True,True,32,200,150,ANN,seq2seq,18,12,2,2,12,timeseries19_ind.npy,timeseries_ind.npy,1,mae,adam,5
-Very low memory consumption,ANN_NtoN_24_2,False,False,True,True,32,200,150,ANN,seq2seq,24,12,2,2,12,timeseries19_ind.npy,timeseries_ind.npy,1,mae,adam,5
-Very low memory consumption,ANN_NtoN_30_2,False,False,True,True,32,200,150,ANN,seq2seq,30,12,2,2,12,timeseries19_ind.npy,timeseries_ind.npy,1,mae,adam,5
-Very low memory consumption,ANN_NtoN_36_2,False,False,True,True,32,200,150,ANN,seq2seq,36,12,2,2,12,timeseries19_ind.npy,timeseries_ind.npy,1,mae,adam,5
-deeptec1,iConvLSTM,False,False,True,True,16,200,48,iConvLSTM,seq2seq,12,12,2,2,12,timeseries19_ind.npy,timeseries_ind.npy,1,mae,adam,5
-deeptec1,EF-ConvLSTM_3x3,False,False,True,True,8,200,24,c333,seq2seq,36,12,2,2,12,timeseries19_ind.npy,timeseries_ind.npy,1,mae,adam,5
-deeptec1,EF-ConvLSTM_1x1,False,False,True,True,4,200,24,c111,seq2seq,36,12,2,2,12,timeseries19_ind.npy,timeseries_ind.npy,1,mae,adam,5
-deeptec1,REF-ConvLSTMv1_1x1,False,False,True,True,4,200,24,c111_res,seq2seq,36,12,2,2,12,timeseries19_ind.npy,timeseries_ind.npy,1,mae,adam,5
-deeptec1,REF-ConvLSTMv1_3x3,False,False,True,True,4,200,24,c333_res,seq2seq,36,12,2,2,12,timeseries19_ind.npy,timeseries_ind.npy,1,mae,adam,5
-deeptec1,EF-ConvLSTMv2_1x1,False,False,True,True,4,200,24,c111_res_v2,seq2seq,36,12,2,2,12,timeseries19_ind.npy,timeseries_ind.npy,1,mae,adam,5
-deeptec1,EF-ConvLSTMv2_3x3,False,False,True,True,8,200,24,c333_res_v2,seq2seq,36,12,2,2,12,timeseries19_ind.npy,timeseries_ind.npy,1,mae,adam,3
-deeptec1,EF-ConvLSTMv3,False,False,True,True,8,200,24,c333_res_v3,seq2seq,36,12,2,2,12,timeseries19_ind.npy,timeseries_ind.npy,1,mae,adam,3
-cbcg,ConvLSTM_Bi,False,False,True,True,8,200,24,c333bi,seq2seq,12,12,2,2,12,timeseries19_ind.npy,timeseries_ind.npy,1,mae,adam,3
+Very low memory consumption,ANN_NtoN_12_2,False,False,True,True,32,200,150,ANN,seq2seq,12,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
+Very low memory consumption,ANN_NtoN_18_2,False,False,True,True,32,200,150,ANN,seq2seq,18,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
+Very low memory consumption,ANN_NtoN_24_2,False,False,True,True,32,200,150,ANN,seq2seq,24,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
+Very low memory consumption,ANN_NtoN_30_2,False,False,True,True,32,200,150,ANN,seq2seq,30,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
+Very low memory consumption,ANN_NtoN_36_2,False,False,True,True,32,200,150,ANN,seq2seq,36,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
+deeptec1-19-20,iConvLSTM,True,True,True,True,16,200,48,iConvLSTM,seq2seq,12,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
+,EF-ConvLSTM_1x1,False,False,True,True,4,200,24,c111,seq2seq,36,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
+deeptec1-19-20,EF-ConvLSTM_3x3,True,True,True,True,8,200,24,c333,seq2seq,36,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
+,REF-ConvLSTMv1_1x1,False,False,True,True,4,200,24,c111_res,seq2seq,36,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
+deeptec1-19-20,REF-ConvLSTMv1_3x3,True,True,True,True,4,200,24,c333_res,seq2seq,36,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
+,EF-ConvLSTMv2_1x1,False,False,True,True,4,200,24,c111_res_v2,seq2seq,36,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
+deeptec1-19-20,EF-ConvLSTMv2_3x3,True,True,True,True,8,200,24,c333_res_v2,seq2seq,36,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
+deeptec1-19-20,EF-ConvLSTMv3,True,True,True,True,8,200,24,c333_res_v3,seq2seq,36,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
+cbcg,ConvLSTM_Bi,False,False,True,True,8,200,24,c333bi,seq2seq,12,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
 cbcg,ConvLSTM_N-1,False,False,True,True,8,200,24,c333_nto1,seq2one,36,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
 cbcg,EF_ConvLSTM_60,False,False,True,True,4,200,24,c333,seq2seq,60,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
 cbcg,EF_ConvLSTM_48,False,False,True,True,4,200,24,c333,seq2seq,48,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
 cbcg,EF_ConvLSTM_36,False,False,True,True,4,200,24,c333,seq2seq,36,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
 cbcg,EF_ConvLSTM_24,False,False,True,True,4,200,24,c333,seq2seq,24,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
 cbcg,EF_ConvLSTM_12,False,False,True,True,4,200,24,c333,seq2seq,12,12,2,2,12,codg2019.npy,codg2020.npy,1,mae,adam,5
-deeptec1,IconvLSTM_14-15,False,False,True,True,16,200,48,iConvLSTM,seq2seq,12,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
-deeptec1,EF-ConvLSTM_3x3_14-15,False,False,True,True,4,200,24,c333,seq2seq,36,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
-deeptec1,EF-ConvLSTM_1x1_14-15,False,False,True,True,4,200,24,c111,seq2seq,36,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
-deeptec1,REF-ConvLSTMv1_1x1_14-15,False,False,True,True,4,200,24,c111_res,seq2seq,36,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
-deeptec1,REF-ConvLSTMv1_3x3_14-15,False,False,True,True,4,200,24,c333_res,seq2seq,36,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
-deeptec1,EF-ConvLSTMv2_1x1_14-15,False,False,True,True,4,200,24,c111_res_v2,seq2seq,36,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
-deeptec1,EF-ConvLSTMv2_3x3_14-15,False,False,True,True,8,200,24,c333_res_v2,seq2seq,36,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
-deeptec1,EF-ConvLSTMv3_14-15,False,False,True,True,8,200,24,c333_res_v3,seq2seq,36,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
-deeptec1,EF-ConvLSTMv2_3x3_14-15_12,False,False,True,True,8,200,24,c333_res_v2,seq2seq,12,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
-deeptec1,EF-ConvLSTMv2_3x3_14-15_24,False,False,True,True,8,200,24,c333_res_v2,seq2seq,24,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
-deeptec1,EF-ConvLSTMv2_3x3_14-15_48,False,False,True,True,8,200,24,c333_res_v2,seq2seq,48,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
+deeptec1,IconvLSTM_14-15,True,True,True,True,16,200,48,iConvLSTM,seq2seq,12,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
+,EF-ConvLSTM_1x1_14-15,False,False,True,True,4,200,24,c111,seq2seq,36,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
+deeptec1-14-15,EF-ConvLSTM_3x3_14-15,True,True,True,True,4,200,24,c333,seq2seq,36,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
+,EF-ConvLSTMv2_1x1_14-15,False,False,True,True,4,200,24,c111_res_v2,seq2seq,36,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
+deeptec1-14-15 ,EF-ConvLSTMv2_3x3_14-15_12,True,True,True,True,8,200,24,c333_res_v2,seq2seq,12,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
+deeptec1-14-15,EF-ConvLSTMv2_3x3_14-15_24,True,True,True,True,8,200,24,c333_res_v2,seq2seq,24,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
+deeptec1-14-15,EF-ConvLSTMv2_3x3_14-15,True,True,True,True,8,200,24,c333_res_v2,seq2seq,36,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
+deeptec1-14-15,EF-ConvLSTMv2_3x3_14-15_48,True,True,True,True,8,200,24,c333_res_v2,seq2seq,48,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
 Out of memory,EF-ConvLSTMv2_3x3_14-15_60,False,False,False,True,8,200,24,c333_res_v2,seq2seq,60,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
-deeptec1,REF-ConvLSTMv1_3x3_14-15_12,False,False,True,True,4,200,24,c333_res,seq2seq,12,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
-deeptec1,REF-ConvLSTMv1_3x3_14-15_24,False,False,True,True,4,200,24,c333_res,seq2seq,24,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
-deeptec1,REF-ConvLSTMv1_3x3_14-15_48,False,False,True,True,4,200,24,c333_res,seq2seq,48,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
+deeptec1,EF-ConvLSTMv3_14-15,True,True,True,True,8,200,24,c333_res_v3,seq2seq,36,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
+,REF-ConvLSTMv1_1x1_14-15,False,False,True,True,4,200,24,c111_res,seq2seq,36,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
+deeptec1-14-15,REF-ConvLSTMv1_3x3_14-15_12,True,True,True,True,4,200,24,c333_res,seq2seq,12,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
+deeptec1-14-15,REF-ConvLSTMv1_3x3_14-15_24,True,True,True,True,4,200,24,c333_res,seq2seq,24,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
+deeptec1-14-15,REF-ConvLSTMv1_3x3_14-15,True,True,True,True,4,200,24,c333_res,seq2seq,36,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5
+deeptec1-14-15,REF-ConvLSTMv1_3x3_14-15_48,True,True,True,True,4,200,24,c333_res,seq2seq,48,12,1,2,12,codg2014.npy,codg2015.npy,1,mae,adam,5

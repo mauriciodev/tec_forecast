@@ -152,7 +152,7 @@ def usePrevious(inputShape,filters=0,nstepsin=12,nstepsout=24):
 
 
 if __name__=="__main__":
-     shape=(24,72,72,1)
+    shape=(24,72,72,1)
     model=ANN(shape,8,12)
     model.summary()
  

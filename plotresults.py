@@ -25,7 +25,10 @@ labels=dict(zip(df.experiment_name, df.label))
 
 #opening the results file
 resultsFile="output/results.py"
-with open(resultsFile, 'r') as f: results = eval(f.read())
+if os.path.exists(resultsFile):
+    with open(resultsFile, 'r') as f: results = eval(f.read())
+else:
+    results={}
 
 for experiment_name in df[(df['compare']==True)]['experiment_name'].values:
     rows=[]
