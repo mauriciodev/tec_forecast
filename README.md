@@ -1,14 +1,14 @@
 # DeepTEC
 A deep learning laboratory for Total Electron Content prediction experiments, using Tensorflow 2.\
-Models can be found at ./models/models.py. Some reusable layers are on ./models/custom_layers.py.\
+Models can be found at ./models/. Some reusable layers are on ./models/custom_layers.py.\
 The c111 and c333 models were inspired by Boulch (2018).
 
 BOULCH, A.; CHERRIER, N.; CASTAINGS, T. Ionospheric activity prediction using convolutional recurrent neural networks. arXiv:1810.13273 [cs], 6 nov. 2018. 
 https://github.com/aboulch/tec_prediction/
 
-## download 3 years of data (2018-2020)
+## download IONEX data
 python3 downloader.py 
-Or download from: https://drive.google.com/file/d/1WJmLn_PruCiMqTQ0oPTtE2k_pZUgIEkj/view?usp=sharing
+Or download from: https://drive.google.com/file/d/1Sm_PiVUIabaew_3Y7sT0NWBqu7xsdHvi/view?usp=share_link
 
 ## create numpy representation for the data downloaded
 python3 ionex_samples.py 
