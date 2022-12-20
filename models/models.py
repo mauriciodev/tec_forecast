@@ -14,7 +14,7 @@ if os.path.exists('models/dev'):
 
 """ANN
 The dense layers work only on the temporal dimension."""
-def ANN(inputShape,filters=50,nstepsout=1, layers=2):
+def ANN(inputShape,filters=50,nstepsout=1, layers=3, activation="linear"):
     #inspired by https://www.tensorflow.org/tutorials/structured_data/time_series#multi-step_models
     in_im = Input(shape=inputShape) 
     x=in_im
@@ -24,11 +24,10 @@ def ANN(inputShape,filters=50,nstepsout=1, layers=2):
     for i in range(layers):
         if i==layers-1:
             filters=nstepsout
-        #activation="relu" 
+        #activation="LeakyReLU" #None
         x = BatchNormalization()(x)
         x = Dropout(0.2)(x)
-        x = Dense(filters)(x)
-        #x = Activation(activation)(x)
+        x = Dense(filters, activation=activation)(x)
     x=expand_dims(x, axis=1)
     x = Permute((4,2,3,1), name="TimeToFirstDim")(x) #moves time back to first dim
     model = Model(in_im, x)
@@ -36,14 +35,11 @@ def ANN(inputShape,filters=50,nstepsout=1, layers=2):
 
 """Convolutional LSTM N to 1 implementation with 1x1 kernels.
 Inspired by https://blog.keras.io/a-ten-minute-introduction-to-sequence-to-sequence-learning-in-keras.html"""
-def c111_nto1(inputShape,filters=16,nstepsout=1, kernel=(1, 1), scale=1.,offset=0.):
+def c111_nto1(inputShape,filters=16,nstepsout=1, kernel=(1, 1), scale=1.,offset=0., dropout=0):
     in_im = Input(shape=inputShape) 
     x=in_im
     #encoder
     #x = Conv3D(1, 1, padding='same',activation="relu")(in_im)
-    if filters>16: 
-        dropout=0.2
-    else: dropout=0
     x=ConvLSTM2D(filters=filters, kernel_size=kernel,padding='same',return_sequences=True, dropout=dropout)(x)
     x=ConvLSTM2D(filters=filters, kernel_size=kernel,padding='same',return_sequences=True, dropout=dropout)(x)
     x=ConvLSTM2D(filters=filters, kernel_size=kernel,padding='same',return_sequences=False, dropout=dropout)(x)
@@ -55,20 +51,18 @@ def c111_nto1(inputShape,filters=16,nstepsout=1, kernel=(1, 1), scale=1.,offset=
 """ Convolutional LSTM N to 1 implementation with 3x3 kernels.
 Ispired by ConvLSTM dilated 121 model (Boulch, 2018)
  Changes: 
- - tanh activation instead of relu. Data was normalized with negative numbers. ReLu doesn't reach negatives."""
-def c333_nto1(inputShape,filters=16,nstepsout=12):
+ - tanh activation instead of relu. Data was normalized with negative numbers. ReLu doesn't reach negatives.
+ """
+def c333_nto1(inputShape,filters=16,nstepsout=12, dropout=0):
     kernel=(3, 3)
-    model =c111_nto1(inputShape,filters=filters,nstepsout=nstepsout, kernel=kernel)
+    model =c111_nto1(inputShape,filters=filters,nstepsout=nstepsout, kernel=kernel, dropout=dropout)
     return model
 
 """BiConvLSTM 1x1.
 Bidirectional Convolutional LSTM."""
-def c111bi(inputShape,filters=16,nstepsout=16, kernel=(1, 1)):
+def c111bi(inputShape,filters=16,nstepsout=16, kernel=(1, 1), dropout=0):
     in_im = Input(shape=inputShape) 
     x=in_im
-    if filters>16: 
-        dropout=0.2
-    else: dropout=0
     x=Bidirectional(ConvLSTM2D(filters=filters, kernel_size=kernel,padding='same',return_sequences=True, dropout=dropout))(x)
     x=Bidirectional(ConvLSTM2D(filters=filters, kernel_size=kernel,padding='same',return_sequences=True, dropout=dropout))(x)
     x=Bidirectional(ConvLSTM2D(filters=filters, kernel_size=kernel,padding='same',return_sequences=True, dropout=dropout))(x)
@@ -78,23 +72,20 @@ def c111bi(inputShape,filters=16,nstepsout=16, kernel=(1, 1)):
 
 """BiConvLSTM 3x3.
 Bidirectional Convolutional LSTM."""
-def c333bi(inputShape,filters=16,nstepsout=12):
+def c333bi(inputShape,filters=16,nstepsout=12, dropout=0):
     kernel=(3, 3)
-    model =c111bi(inputShape,filters=filters,nstepsout=nstepsout, kernel=kernel)
+    model =c111bi(inputShape,filters=filters,nstepsout=nstepsout, kernel=kernel, dropout=dropout)
     return model
 
 
 """ED-ConvLSTM.
 Encoder-Decoder Convolutional LSTM 1x1.
 """
-def c111(inputShape,filters=16,nstepsout=12, kernel=(1, 1)):
+def c111(inputShape,filters=16,nstepsout=12, kernel=(1, 1), dropout=0):
     #Inspired on https://github.com/Azure/DeepLearningForTimeSeriesForecasting/blob/master/3_RNN_encoder_decoder.ipynb
     in_im = Input(shape=inputShape) 
     x=in_im
     #encoder
-    if filters>16: 
-        dropout=0#0.2 
-    else: dropout=0
     x,h1,c1=ConvLSTM2D(filters=filters, kernel_size=kernel,padding='same',return_sequences=True,return_state=True, dropout=dropout)(x)
     x,h2,c2=ConvLSTM2D(filters=filters, kernel_size=kernel,padding='same',return_sequences=True,return_state=True, dropout=dropout)(x)
     x,h3,c3=ConvLSTM2D(filters=filters, kernel_size=kernel,padding='same',return_sequences=False,return_state=True, dropout=dropout)(x)
@@ -108,9 +99,9 @@ def c111(inputShape,filters=16,nstepsout=12, kernel=(1, 1)):
 
 """ED-ConvLSTM.
 Encoder-Decoder Convolutional LSTM 3x3."""
-def c333(inputShape,filters=16,nstepsout=12):
+def c333(inputShape,filters=16,nstepsout=12, dropout=0.2):
     kernel=(3, 3)
-    model =c111(inputShape,filters=filters,nstepsout=nstepsout, kernel=kernel)
+    model =c111(inputShape,filters=filters,nstepsout=nstepsout, kernel=kernel, dropout=dropout)
     return model
 
 """iConvLSTM 
