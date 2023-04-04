@@ -245,7 +245,10 @@ def r2(y_true, y_pred):
 def getNvidiaSmiMem():
     nvidiasmi=subprocess.run("nvidia-smi", shell=True, capture_output=True)
     found=re.search('C.+python.(.+?)\|', nvidiasmi.stdout.decode("utf-8") )
-    memory=found.group(1).strip()
+    if found:
+        memory=found.group(1).strip()
+    else:
+        memory=0
     return memory
 
 if __name__=="__main__":
