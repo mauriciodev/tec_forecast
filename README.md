@@ -37,4 +37,4 @@ python3 evaluate.py
 python3 plotresults.py
 
 ## Google Colab
-https://colab.research.google.com/drive/1suy7ssFTbAiJpA_lcjJuEmQsiLy7nRS3?usp=sharing
+https://github.com/mauriciodev/tec_forecast/blob/main/examples/tec_forecast.ipynb
