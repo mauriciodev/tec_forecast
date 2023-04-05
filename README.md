@@ -6,6 +6,9 @@ The c111 and c333 models were inspired by Boulch (2018).
 BOULCH, A.; CHERRIER, N.; CASTAINGS, T. Ionospheric activity prediction using convolutional recurrent neural networks. arXiv:1810.13273 [cs], 6 nov. 2018. 
 https://github.com/aboulch/tec_prediction/
 
+The models on ./models/dev/gps_solutions.py were described on the article: \
+de Paulo MCM, Marques HA, Feitosa RQ, Ferreira MP (2023) New encoder–decoder convolutional LSTM neural network architectures for next-day global ionosphere maps forecast. GPS Solut 27(2):95. https://doi.org/10.1007/s10291-023-01442-4
+
 ## download IONEX data
 python3 downloader.py 
 Or download from: https://drive.google.com/file/d/1Sm_PiVUIabaew_3Y7sT0NWBqu7xsdHvi/view?usp=share_link
