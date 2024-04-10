@@ -1,0 +1,13 @@
+imageio
+tensorflow-gpu
+numpy
+matplotlib
+argparse
+sklearn
+pandas
+scikit-learn
+pydot
+graphviz
+h5py
+keras==2.15.0
+tensorflow==2.15.1
